@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ring 1 & 2 — SAS Credit Risk Exercises</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f9fafb; color: #111827; margin: 0; padding: 0; }
+    .container { max-width: 960px; margin: auto; padding: 24px; }
+    header { margin-bottom: 24px; }
+    header h1 { font-size: 1.8rem; margin: 0 0 8px; color: #0f172a; }
+    header p { color: #6b7280; margin: 0; }
+    a.back { display: inline-block; margin-bottom: 18px; text-decoration: none; color: #2563eb; font-size: 0.95rem; }
+    a.back:hover { text-decoration: underline; }
+    .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); margin-bottom: 24px; }
+    h2 { margin-top: 24px; margin-bottom: 12px; color: #1d4ed8; font-size: 1.2rem; }
+    h3 { margin-top: 18px; margin-bottom: 8px; color: #2563eb; font-size: 1rem; }
+    p.lead { margin-bottom: 16px; color: #374151; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; }
+    th, td { border: 1px solid #e5e7eb; padding: 8px 10px; text-align: left; font-family: monospace; font-size: 0.95rem; }
+    .code { background: #111827; color: #e5e7eb; padding: 14px; border-radius: 8px; overflow: auto; font-size: 0.9rem; line-height: 1.5; margin-bottom: 18px; }
+    .note { background: #f1f5f9; border-left: 4px solid #2563eb; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; color: #374151; font-size: 0.95rem; }
+    footer { margin-top: 40px; text-align: center; color: #6b7280; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back">← Back to home</a>
+    <header>
+      <h1>Ring 1 & 2 — SAS Credit Risk Exercises</h1>
+      <p>Step-by-step SAS lessons with exercises and code</p>
+    </header>
+
+    <div class="card">
+      <h2>Ring 1: Borrower-Level Aggregation</h2>
+      <p class="lead">Warm-up exercise for borrower-level aggregation using SAS.</p>
+
+      <h3>Sample Data</h3>
+      <table>
+        <thead>
+          <tr><th>Borrower_ID</th><th>Loan_ID</th><th>Balance</th><th>Payment</th><th>Month</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1001</td><td>L1</td><td>5000</td><td>200</td><td>202401</td></tr>
+          <tr><td>1001</td><td>L2</td><td>2000</td><td>100</td><td>202401</td></tr>
+          <tr><td>1002</td><td>L3</td><td>8000</td><td>300</td><td>202401</td></tr>
+          <tr><td>1002</td><td>L4</td><td>6000</td><td>250</td><td>202401</td></tr>
+          <tr><td>1003</td><td>L5</td><td>4000</td><td>150</td><td>202401</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Task</h3>
+      <ul>
+        <li>Total_Balance = sum(Balance)</li>
+        <li>Total_Payment = sum(Payment)</li>
+        <li>Num_Loans = count(Loan_ID)</li>
+        <li>Avg_Payment_Ratio = Total_Payment / Total_Balance</li>
+      </ul>
+
+      <h3>PROC SQL Solution</h3>
+      <div class="code"><pre>
+proc sql;
+    create table borrower_summary as
+    select 
+        Borrower_ID,
+        Month,
+        sum(Balance) as Tot_Balance,
+        sum(Payment) as Tot_Payment,
+        count(Loan_ID) as Num_Loans,
+        calculated Tot_Payment / calculated Tot_Balance as Avg_Pymt_Ratio
+    from table1
+    group by Borrower_ID, Month;
+quit;
+      </pre></div>
+
+      <h3>DATA Step + PROC MEANS Solution</h3>
+      <div class="code"><pre>
+proc means data=table1 noprint;
+    class Borrower_ID Month;
+    var Balance Payment Loan_ID;
+    output out=borrower_summary
+        sum(Balance)=Tot_Balance
+        sum(Payment)=Tot_Payment
+        n(Loan_ID)=Num_Loans;
+run;
+
+data borrower_summary;
+    set borrower_summary;
+    if Tot_Balance > 0 then Avg_Pymt_Ratio = Tot_Payment / Tot_Balance;
+run;
+      </pre></div>
+
+      <div class="note">
+        Ratio of sums = overall borrower capacity view.<br>
+        Mean of loan-level ratios = distribution view (variation across loans). Both are useful depending on objective.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ring 2: Borrower Feature Engineering</h2>
+      <p class="lead">Step-by-step DATA step feature creation for credit risk modeling.</p>
+
+      <div class="code"><pre>
+proc sort data=table1;
+    by Borrower_ID Month;
+run;
+
+data borrower_features;
+    set table1;
+    by Borrower_ID Month;
+
+    retain Tot_Balance Tot_Payment Num_Loans Ever_90DPD 0;
+
+    if first.Month then do;
+        Tot_Balance = 0;
+        Tot_Payment = 0;
+        Num_Loans = 0;
+        Ever_90DPD = 0;
+    end;
+
+    Tot_Balance + Balance;
+    Tot_Payment + Payment;
+    Num_Loans + 1;
+
+    if DPD >= 90 then Ever_90DPD = 1;
+
+    if last.Month then do;
+        if Tot_Balance > 0 then Payment_Ratio = Tot_Payment / Tot_Balance;
+        else Payment_Ratio = .;
+        Utilization = Tot_Balance / Total_Credit_Limit;
+        output;
+    end;
+run;
+      </pre></div>
+
+      <div class="note">
+        <strong>Key Concepts:</strong><br>
+        - <code>retain</code> keeps accumulators across rows.<br>
+        - <code>first.Month / last.Month</code> detects group boundaries (like SQL GROUP BY).<br>
+        - Aggregation (+) and conditional flags (Ever_90DPD) produce one row per borrower/month.<br>
+        - Efficient for millions of rows, scalable for real banking datasets.
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 My Learning Journal</p>
+    </footer>
+  </div>
+</body>
+</html>
