@@ -1,0 +1,421 @@
+Of course. Here is a comprehensive HTML file that transforms the learning material into a structured, exhaustive guide for learning SAS in a credit risk context. This file includes detailed explanations, code snippets, mathematical formulas, and best practices, all formatted for easy reading and learning.
+
+You can save the following code as an `.html` file and open it in any web browser.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAS for Credit Risk: A Comprehensive Learning Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        header {
+            background-color: #003366;
+            color: #fff;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        nav {
+            background: #ffffff;
+            border-bottom: 2px solid #dde3e8;
+            padding: 1rem 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav a {
+            color: #003366;
+            margin: 0 20px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #007bff;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        section {
+            background: #fff;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: #003366;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 2rem;
+        }
+        h3 {
+            color: #0056b3;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+        code {
+            font-family: 'Source Code Pro', monospace;
+            background-color: #eef2f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        pre .comment { color: #5c6370; font-style: italic; }
+        pre .keyword { color: #c678dd; }
+        pre .string { color: #98c379; }
+        pre .number { color: #d19a66; }
+        pre .function { color: #61afef; }
+        
+        .info-box {
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 5px solid #007bff;
+            background-color: #e7f3ff;
+            border-radius: 0 8px 8px 0;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #003366;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        th, td {
+            border: 1px solid #dde3e8;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #eef2f5;
+            font-weight: 700;
+        }
+        .math-formula {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2em;
+            text-align: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SAS for Credit Risk: A Comprehensive Learning Guide</h1>
+        <p>From Data Aggregation to Production-Ready PD Models</p>
+    </header>
+
+    <nav>
+        <a href="#ring1">Ring 1: SAS Core</a>
+        <a href="#ring2">Ring 2: Data Work</a>
+        <a href="#ring3">Ring 3: Modeling</a>
+        <a href="#pipeline">Full Pipeline</a>
+    </nav>
+
+    <div class="container">
+        
+        <section id="introduction">
+            <h2>Introduction: Why SAS for Credit Risk?</h2>
+            <p>For decades, SAS (Statistical Analysis System) has been the cornerstone of data analysis in the banking and finance industry. Its robustness, security, and powerful data handling capabilities make it the preferred tool for credit risk modeling, regulatory reporting (like Basel and IFRS 9), and portfolio monitoring. This guide will walk you through the essential SAS skills needed for a credit risk analyst, structured in a "Ring-based" learning path that builds from fundamentals to advanced, production-ready pipelines.</p>
+        </section>
+        
+        <section id="ring1">
+            <h2>Ring 1: SAS Core Refresher - Data Aggregation</h2>
+            <p>The first step in any analysis is summarizing data. In credit risk, we frequently aggregate loan-level data to the borrower level to understand a customer's total exposure, payment capacity, and overall behavior.</p>
+            
+            <h3>The Challenge: Borrower-level Aggregation</h3>
+            <p>Given loan-level data, we want to calculate the following for each borrower, each month:</p>
+            <ul>
+                <li><strong>Total Balance:</strong> The sum of all loan balances.</li>
+                <li><strong>Total Payment:</strong> The sum of all payments made.</li>
+                <li><strong>Number of Loans:</strong> The total count of active loans.</li>
+                <li><strong>Average Payment Ratio:</strong> The ratio of total payments to total balance.</li>
+            </ul>
+            
+            <h3>Method 1: The PROC SQL Approach (Set-Based)</h3>
+            <p><code>PROC SQL</code> is intuitive for those familiar with SQL. It processes data as a complete set, making the code concise and declarative—you state *what* you want, not *how* to get it.</p>
+            <pre>
+<span class="keyword">proc sql;</span>
+    <span class="keyword">create table</span> borrower_summary <span class="keyword">as</span>
+    <span class="keyword">select</span> 
+        Borrower_ID,
+        Month,
+        <span class="function">sum</span>(Balance) <span class="keyword">as</span> Tot_Balance <span class="comment">/* Sum of balances */</span>,
+        <span class="function">sum</span>(Payment) <span class="keyword">as</span> Tot_Payment <span class="comment">/* Sum of payments */</span>,
+        <span class="function">count</span>(Loan_ID) <span class="keyword">as</span> Num_Loans   <span class="comment">/* Count of loans */</span>,
+        <span class="comment">/* Calculate ratio of sums AFTER aggregation */</span>
+        <span class="keyword">calculated</span> Tot_Payment / <span class="keyword">calculated</span> Tot_Balance <span class="keyword">as</span> Avg_Pymt_Ratio
+    <span class="keyword">from</span> work.loan_data
+    <span class="keyword">group by</span> Borrower_ID, Month;
+<span class="keyword">quit;</span>
+            </pre>
+            <div class="info-box">
+                <h4>🧠 Key Concept: `GROUP BY` and Aggregate Functions</h4>
+                <p>The <code>GROUP BY</code> clause is the heart of aggregation. It tells SAS to collect all rows with the same values in the specified columns (<code>Borrower_ID</code>, <code>Month</code>) into a single group. The aggregate functions (<code>SUM()</code>, <code>COUNT()</code>) then perform calculations on each group, producing a single summary row.</p>
+            </div>
+            
+            <h3>Method 2: The DATA Step + PROC MEANS Approach (Row-by-Row)</h3>
+            <p>This classic SAS approach is often more performant on extremely large datasets. It involves two steps: first, using <code>PROC MEANS</code> to perform the aggregation, and second, using a <code>DATA</code> step to calculate the final ratio.</p>
+            <p><strong>Step 1: Aggregate with <code>PROC MEANS</code></strong></p>
+            <pre>
+<span class="keyword">proc means data</span>=work.loan_data <span class="keyword">noprint</span>;
+    <span class="comment">/* Define grouping variables */</span>
+    <span class="keyword">class</span> Borrower_ID Month;
+    <span class="comment">/* Specify variables to analyze */</span>
+    <span class="keyword">var</span> Balance Payment;
+    <span class="comment">/* Define output dataset and new variable names */</span>
+    <span class="keyword">output out</span>=borrower_summary_stats
+        <span class="function">sum</span>(Balance)=Tot_Balance
+        <span class="function">sum</span>(Payment)=Tot_Payment
+        <span class="function">n</span>()=Num_Loans; <span class="comment">/* n() counts observations in the group */</span>
+<span class="keyword">run;</span>
+            </pre>
+             <p><strong>Step 2: Calculate Ratio in a DATA Step</strong></p>
+             <p>Why a second step? <code>PROC MEANS</code> is optimized for pre-defined statistical calculations (sum, mean, etc.). It cannot create new variables based on the ratios of just-calculated aggregates within the same step. We use a subsequent <code>DATA</code> step to perform this final calculation.</p>
+             <pre>
+<span class="keyword">data</span> borrower_summary;
+    <span class="keyword">set</span> borrower_summary_stats;
+    <span class="comment">/* Avoid division by zero */</span>
+    <span class="keyword">if</span> Tot_Balance > <span class="number">0</span> <span class="keyword">then</span> Avg_Pymt_Ratio = Tot_Payment / Tot_Balance;
+    <span class="keyword">else</span> Avg_Pymt_Ratio = .; <span class="comment">/* Assign missing if no balance */</span>
+<span class="keyword">run;</span>
+            </pre>
+            <div class="info-box">
+                <h4>🚀 Performance Tip</h4>
+                <p>For massive datasets (billions of rows), the <code>PROC MEANS</code>/<code>DATA</code> step combination often outperforms <code>PROC SQL</code> because it can process data sequentially with lower memory overhead. However, for readability and moderate data sizes, <code>PROC SQL</code> is often preferred.</p>
+            </div>
+        </section>
+
+        <section id="ring2">
+            <h2>Ring 2: Credit Risk Data Work - Feature Engineering</h2>
+            <p>Feature engineering is the art of creating predictive variables from raw data. In credit risk, we focus on time-series features that capture a borrower's behavior over time.</p>
+            
+            <h3>Creating Rolling / Window Features</h3>
+            <p>Rolling features provide a smoothed view of recent behavior, which is often more predictive than a single month's snapshot. Common examples include 3-month average payments or 12-month maximum delinquency.</p>
+            
+            <h3>Technique: Using `BY` processing, `RETAIN`, and Arrays</h3>
+            <p>This powerful <code>DATA</code> step technique allows for complex, stateful calculations across rows within a group (e.g., a single borrower). It's the "low-level" C++ equivalent for SAS data processing.</p>
+            <ol>
+                <li><strong>Sort the Data:</strong> BY-group processing requires data to be sorted by the grouping variables.</li>
+                <li><strong>Use `RETAIN`:</strong> The <code>RETAIN</code> statement tells SAS not to reset a variable's value to missing at the start of each new row iteration. This allows us to carry values forward.</li>
+                <li><strong>Use `FIRST.` and `LAST.` variables:</strong> SAS automatically creates these boolean flags to detect the beginning and end of each BY-group.</li>
+                <li><strong>Use Arrays:</strong> Arrays are temporary, in-memory lists that are perfect for storing a history of values (e.g., the last 12 months of DPD).</li>
+            </ol>
+            
+            <h3>Example: Calculating Rolling Delinquency Features</h3>
+            <p>Let's calculate three critical risk features: maximum DPD over 12 months, the count of severe delinquencies in 6 months, and a flag for recent delinquency.</p>
+            <pre>
+<span class="comment">/* Step 1: Ensure data is sorted by borrower and time */</span>
+<span class="keyword">proc sort data</span>=borrower_monthly_data;
+    <span class="keyword">by</span> Borrower_ID Month;
+<span class="keyword">run;</span>
+
+<span class="keyword">data</span> borrower_rolling_features;
+    <span class="keyword">set</span> borrower_monthly_data;
+    <span class="keyword">by</span> Borrower_ID; <span class="comment">/* Enable FIRST./LAST. processing */</span>
+
+    <span class="comment">/* Create a temporary array to hold the last 12 DPD values.
+       _temporary_ means it's not written to the output dataset. */</span>
+    <span class="keyword">array</span> dpd_hist[<span class="number">12</span>] _temporary_;
+
+    <span class="comment">/* On the first record for a new borrower, reset the history array to missing */</span>
+    <span class="keyword">if first</span>.Borrower_ID <span class="keyword">then do</span> i=<span class="number">1</span> <span class="keyword">to</span> <span class="number">12</span>;
+        dpd_hist[i] = .;
+    <span class="keyword">end;</span>
+
+    <span class="comment">/* Shift the array: move each value one position to the left */</span>
+    <span class="keyword">do</span> i=<span class="number">1</span> <span class="keyword">to</span> <span class="number">11</span>;
+        dpd_hist[i] = dpd_hist[i+<span class="number">1</span>];
+    <span class="keyword">end;</span>
+    <span class="comment">/* Add the current month's DPD to the last position */</span>
+    dpd_hist[<span class="number">12</span>] = DPD;
+
+    <span class="comment">/* Now compute features using the updated history in the array */</span>
+    Max_DPD_12M = <span class="function">max</span>(<span class="keyword">of</span> dpd_hist[*]);
+    
+    Num_90DPD_6M = <span class="function">sum</span>(<span class="keyword">of</span> (dpd_hist[<span class="number">7</span>] >= <span class="number">90</span>), (dpd_hist[<span class="number">8</span>] >= <span class="number">90</span>), 
+                       (dpd_hist[<span class="number">9</span>] >= <span class="number">90</span>), (dpd_hist[<span class="number">10</span>] >= <span class="number">90</span>), 
+                       (dpd_hist[<span class="number">11</span>] >= <span class="number">90</span>), (dpd_hist[<span class="number">12</span>] >= <span class="number">90</span>));
+
+    Ever_60DPD_3M = <span class="function">max</span>(<span class="keyword">of</span> (dpd_hist[<span class="number">10</span>] >= <span class="number">60</span>), (dpd_hist[<span class="number">11</span>] >= <span class="number">60</span>), (dpd_hist[<span class="number">12</span>] >= <span class="number">60</span>));
+    
+    <span class="keyword">drop</span> i; <span class="comment">/* Drop the loop counter variable */</span>
+<span class="keyword">run;</span>
+            </pre>
+        </section>
+
+        <section id="ring3">
+            <h2>Ring 3: Modeling Toolkit - PD Model Development</h2>
+            <p>With our features prepared, we can now build a Probability of Default (PD) model. The industry standard is logistic regression, often combined with Weight of Evidence (WOE) transformation to create a scorecard.</p>
+
+            <h3>Step 1: Weight of Evidence (WOE) and Information Value (IV)</h3>
+            <p><strong>Weight of Evidence (WOE)</strong> transforms a variable into a continuous scale that measures the "strength of evidence" in favor of default. It helps linearize relationships for the logistic regression model.</p>
+            <div class="math-formula">
+                $$ WOE = \ln\left(\frac{\% \text{ of Non-Defaults (Goods)}}{\% \text{ of Defaults (Bads)}}\right) $$
+            </div>
+            
+            <p><strong>Information Value (IV)</strong> measures the predictive power of a variable. It is the sum of the WOE multiplied by the difference in proportions of Goods and Bads across all bins.</p>
+            <div class="math-formula">
+                $$ IV = \sum \left( (\% \text{ Goods}_i - \% \text{ Bads}_i) \times WOE_i \right) $$
+            </div>
+            
+            <table>
+                <caption>Rule of Thumb for IV Interpretation</caption>
+                <thead>
+                    <tr><th>Information Value</th><th>Predictive Power</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>&lt; 0.02</td><td>Useless</td></tr>
+                    <tr><td>0.02 to 0.1</td><td>Weak</td></tr>
+                    <tr><td>0.1 to 0.3</td><td>Medium</td></tr>
+                    <tr><td>0.3 to 0.5</td><td>Strong</td></tr>
+                    <tr><td>&gt; 0.5</td><td>Suspiciously High (check for overfitting)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Step 2: Logistic Regression (PROC LOGISTIC)</h3>
+            <p><code>PROC LOGISTIC</code> fits a model to predict a binary outcome (e.g., <code>Default_12m = 1</code> vs. <code>0</code>). We use the WOE-transformed variables or raw variables as inputs.</p>
+            <pre>
+<span class="keyword">proc logistic data</span>=model_data <span class="keyword">descending</span>;
+    <span class="comment">/* 'descending' models the probability of the higher-valued outcome (i.e., Default_12m=1) */</span>
+    <span class="keyword">model</span> Default_12m(event=<span class="string">'1'</span>) = Max_DPD_12M Num_90DPD_6M Payment_Ratio_WOE;
+    
+    <span class="comment">/* Output dataset with predicted probabilities */</span>
+    <span class="keyword">output out</span>=pred_scores p=PD;
+<span class="keyword">run;</span>
+            </pre>
+
+            <h3>Step 3: Model Performance Metrics</h3>
+            <p>After building the model, we must validate its performance.</p>
+            
+            <h4>Kolmogorov-Smirnov (KS) Statistic</h4>
+            <p>The KS statistic measures the maximum separation between the cumulative distribution functions (CDF) of the "Good" and "Bad" populations. A higher KS indicates better model discrimination. It can be calculated using <code>PROC NPAR1WAY</code>.</p>
+            <pre>
+<span class="keyword">proc npar1way data</span>=pred_scores <span class="keyword">edf</span>;
+    <span class="keyword">class</span> Default_12m; <span class="comment">/* Group by Good/Bad */</span>
+    <span class="keyword">var</span> PD; <span class="comment">/* Analyze the distribution of predicted probabilities */</span>
+<span class="keyword">run;</span>
+            </pre>
+            
+            <h4>Gini Coefficient / AUC</h4>
+            <p>The Gini coefficient is another measure of discriminatory power, derived from the Area Under the ROC Curve (AUC). Gini = 2 * AUC - 1. A Gini of 0 means no discrimination, while a Gini of 1 is perfect discrimination.</p>
+        </section>
+
+        <section id="pipeline">
+            <h2>Putting It All Together: A Bank-Ready PD Modeling Pipeline</h2>
+            <p>This section provides a set of reusable macros and code blocks that form a complete, end-to-end PD modeling pipeline in SAS, covering automation, scaling, and validation.</p>
+            
+            <h3>Macro 1: Automated WOE & IV Calculation</h3>
+            <p>This powerful macro automatically bins variables, handles zero counts safely, calculates WOE and IV, and produces a summary report.</p>
+            <pre>
+<span class="keyword">%macro</span> <span class="function">woe_iv_auto</span>(data=, varlist=, target=Default_12m, bins=10, outdir=woe_out);
+    <span class="comment">/* ... (Macro logic for binning and calculation) ... */</span>
+    <span class="comment">/* This macro would contain robust logic to:
+       1. Check if a variable is character or numeric.
+       2. Bin numerics using PROC RANK.
+       3. Calculate Goods, Bads, and totals per bin.
+       4. Apply WOE and IV formulas safely (handling zeros).
+       5. Output a summary table of IVs for all variables.
+    */</span>
+<span class="keyword">%mend</span> woe_iv_auto;
+
+<span class="comment">/* Example Usage */</span>
+<span class="keyword">%woe_iv_auto</span>(<span class="keyword">data</span>=model_data, <span class="keyword">varlist</span>=Payment_Ratio Max_DPD_12M, <span class="keyword">target</span>=Default_12m);
+            </pre>
+            
+            <h3>Step 2: Score Scaling (Creating a Scorecard)</h3>
+            <p>Logistic regression produces a probability (PD). For business use, we convert this into a user-friendly score (e.g., 300-850). This is done by scaling the log-odds.</p>
+            <div class="math-formula">
+                $$ \text{Score} = \text{Offset} - \text{Factor} \times \ln\left(\frac{PD}{1-PD}\right) $$
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li><strong>Factor = PDO / ln(2)</strong>. PDO is "Points to Double the Odds" (e.g., 20 points means a 20-point score increase doubles the odds of being "Good").</li>
+                <li><strong>Offset</strong> is a baseline score set to a desired level for a specific odds ratio (e.g., score 600 at 50:1 odds).</li>
+            </ul>
+            <pre>
+<span class="keyword">data</span> final_scores;
+    <span class="keyword">set</span> pred_scores; <span class="comment">/* from PROC LOGISTIC output */</span>
+
+    <span class="comment">/* Define scaling parameters */</span>
+    PDO = <span class="number">20</span>;
+    Factor = PDO / <span class="function">log</span>(<span class="number">2</span>);
+    Base_Odds = <span class="number">50</span>; <span class="comment">/* 50:1 Good:Bad */</span>
+    Base_Score = <span class="number">600</span>;
+    Offset = Base_Score - Factor * <span class="function">log</span>(Base_Odds);
+
+    <span class="comment">/* Calculate log-odds from PD and then the score */</span>
+    logit = <span class="function">log</span>(PD / (<span class="number">1</span>-PD));
+    Credit_Score = Offset - Factor * logit;
+<span class="keyword">run;</span>
+            </pre>
+
+            <h3>Step 3: Model Monitoring - Population Stability Index (PSI)</h3>
+            <p>After a model is deployed, we must monitor it to ensure the incoming population of applicants is not drastically different from the population used for training. The PSI measures this shift.</p>
+            <div class="math-formula">
+                $$ PSI = \sum \left( (\% \text{ Actual}_i - \% \text{ Expected}_i) \times \ln\left(\frac{\% \text{ Actual}_i}{\% \text{ Expected}_i}\right) \right) $$
+            </div>
+            <table>
+                <caption>PSI Interpretation</caption>
+                <thead><tr><th>PSI Value</th><th>Population Shift</th><th>Action</th></tr></thead>
+                <tbody>
+                    <tr><td>&lt; 0.1</td><td>Insignificant change</td><td>No action needed</td></tr>
+                    <tr><td>0.1 to 0.25</td><td>Minor shift</td><td>Monitor closely</td></tr>
+                    <tr><td>&gt; 0.25</td><td>Major shift</td><td>Investigate; model may need recalibration or rebuilding</td></tr>
+                </tbody>
+            </table>
+            <div class="info-box">
+                <h4>Next Steps and Productionization</h4>
+                <p>A full production pipeline also involves:</p>
+                <ul>
+                    <li><strong>Out-of-Time (OOT) Validation:</strong> Testing the model on a dataset from a different time period to ensure its stability.</li>
+                    <li><strong>Reject Inference:</strong> A set of techniques to infer the outcomes for applicants who were rejected and thus have no observed default behavior.</li>
+                    <li><strong>Production Scoring Code:</strong> Writing a highly efficient, simplified DATA step that applies the final model coefficients and WOE mappings to new data without any unnecessary calculations.</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>
+```
